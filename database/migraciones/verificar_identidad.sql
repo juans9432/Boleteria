@@ -1,0 +1,64 @@
+-- Verifica cardinalidades con cambios de prueba que se revierten.
+DECLARE
+    v_rol NUMBER;
+    v_prestador NUMBER;
+    v_usuario NUMBER;
+    v_perfil NUMBER;
+    v_conteo NUMBER;
+BEGIN
+    SAVEPOINT prueba_identidad;
+    SELECT ID_ROL INTO v_rol FROM ROL WHERE NOMBRE = 'ENCARGADO_PRESTADOR';
+    SELECT MIN(ID_PRESTADOR) INTO v_prestador FROM PRESTADOR;
+
+    INSERT INTO PERFIL_CLIENTE (DOCUMENTO, NOMBRE) VALUES ('TEST-SIN-CUENTA-1', 'Prueba 1')
+        RETURNING ID_PERFIL INTO v_perfil;
+    INSERT INTO PERFIL_CLIENTE (DOCUMENTO, NOMBRE) VALUES ('TEST-SIN-CUENTA-2', 'Prueba 2');
+
+    INSERT INTO USUARIO_SISTEMA (CORREO, CLAVE_HASH, ESTADO, ID_ROL, ID_PRESTADOR)
+        VALUES ('prueba1@identidad.invalid', 'NO_AUTENTICABLE', 'ACTIVO', v_rol, v_prestador)
+        RETURNING ID_USUARIO INTO v_usuario;
+    INSERT INTO USUARIO_SISTEMA (CORREO, CLAVE_HASH, ESTADO, ID_ROL, ID_PRESTADOR)
+        VALUES ('prueba2@identidad.invalid', 'NO_AUTENTICABLE', 'ACTIVO', v_rol, v_prestador);
+    SELECT COUNT(*) INTO v_conteo FROM USUARIO_SISTEMA
+    WHERE ID_PRESTADOR = v_prestador AND CORREO IN ('prueba1@identidad.invalid','prueba2@identidad.invalid');
+    IF v_conteo <> 2 THEN RAISE_APPLICATION_ERROR(-20101, 'Cardinalidad incorrecta'); END IF;
+
+    UPDATE PERFIL_CLIENTE SET ID_USUARIO = v_usuario WHERE ID_PERFIL = v_perfil;
+    BEGIN
+        UPDATE PERFIL_CLIENTE SET ID_USUARIO = v_usuario WHERE DOCUMENTO = 'TEST-SIN-CUENTA-2';
+        RAISE_APPLICATION_ERROR(-20102, 'Cuenta duplicada aceptada');
+    EXCEPTION WHEN DUP_VAL_ON_INDEX THEN NULL;
+    END;
+
+    BEGIN
+        UPDATE USUARIO_SISTEMA SET ID_PRESTADOR = -1 WHERE ID_USUARIO = v_usuario;
+        RAISE_APPLICATION_ERROR(-20103, 'Prestador inexistente aceptado');
+    EXCEPTION WHEN OTHERS THEN IF SQLCODE <> -2291 THEN RAISE; END IF;
+    END;
+
+    BEGIN
+        UPDATE PERFIL_CLIENTE SET ID_USUARIO = -1 WHERE ID_PERFIL = v_perfil;
+        RAISE_APPLICATION_ERROR(-20104, 'Cuenta inexistente aceptada');
+    EXCEPTION WHEN OTHERS THEN IF SQLCODE <> -2291 THEN RAISE; END IF;
+    END;
+
+    INSERT INTO RESERVA (ESTADO, ID_PERFIL) VALUES ('CONFIRMADA', v_perfil);
+    INSERT INTO RESERVA (ESTADO, ID_PERFIL) VALUES ('CONFIRMADA', v_perfil);
+    UPDATE PERFIL_CLIENTE SET ID_USUARIO = NULL WHERE ID_PERFIL = v_perfil;
+    SELECT COUNT(*) INTO v_conteo FROM (
+        SELECT P.ID_PERFIL
+        FROM PERFIL_CLIENTE P
+        LEFT JOIN USUARIO_SISTEMA U ON P.ID_USUARIO = U.ID_USUARIO
+        JOIN RESERVA R ON P.ID_PERFIL = R.ID_PERFIL
+        WHERE R.ESTADO = 'CONFIRMADA' AND P.ID_PERFIL = v_perfil
+        GROUP BY P.ID_PERFIL HAVING COUNT(R.ID_RESERVA) >= 2
+    );
+    IF v_conteo <> 1 THEN RAISE_APPLICATION_ERROR(-20105, 'Reporte excluye perfil sin cuenta'); END IF;
+
+    ROLLBACK TO prueba_identidad;
+    DBMS_OUTPUT.PUT_LINE('IDENTIDAD_SQL_OK');
+EXCEPTION WHEN OTHERS THEN
+    ROLLBACK TO prueba_identidad;
+    RAISE;
+END;
+/

@@ -1,0 +1,1401 @@
+
+-- =========================================================
+-- PROYECTO: BOLETERIA Y EVENTOS TURISTICOS DEL QUINDIO
+-- SCRIPT 04: CARGA DE DATOS INICIALES
+-- ESQUEMA: BOLETERIA_FINAL
+-- =========================================================
+
+-- =========================================================
+-- 1. MUNICIPIOS
+-- =========================================================
+
+INSERT INTO MUNICIPIO (NOMBRE, DEPARTAMENTO)
+VALUES ('Armenia', 'Quindio');
+
+INSERT INTO MUNICIPIO (NOMBRE, DEPARTAMENTO)
+VALUES ('Montenegro', 'Quindio');
+
+INSERT INTO MUNICIPIO (NOMBRE, DEPARTAMENTO)
+VALUES ('Quimbaya', 'Quindio');
+
+INSERT INTO MUNICIPIO (NOMBRE, DEPARTAMENTO)
+VALUES ('Salento', 'Quindio');
+
+INSERT INTO MUNICIPIO (NOMBRE, DEPARTAMENTO)
+VALUES ('Filandia', 'Quindio');
+
+INSERT INTO MUNICIPIO (NOMBRE, DEPARTAMENTO)
+VALUES ('Calarca', 'Quindio');
+
+
+-- =========================================================
+-- 2. TIPOS DE PRESTADOR
+-- =========================================================
+
+INSERT INTO TIPO_PRESTADOR (NOMBRE)
+VALUES ('Parque tematico');
+
+INSERT INTO TIPO_PRESTADOR (NOMBRE)
+VALUES ('Operador turistico');
+
+INSERT INTO TIPO_PRESTADOR (NOMBRE)
+VALUES ('Centro recreativo');
+
+INSERT INTO TIPO_PRESTADOR (NOMBRE)
+VALUES ('Agencia de turismo');
+
+
+-- =========================================================
+-- 3. ROLES DEL SISTEMA
+-- =========================================================
+
+INSERT INTO ROL (NOMBRE)
+VALUES ('ADMINISTRADOR');
+
+INSERT INTO ROL (NOMBRE)
+VALUES ('OPERADOR');
+
+INSERT INTO ROL (NOMBRE)
+VALUES ('CLIENTE');
+
+
+-- =========================================================
+-- 4. TIPOS DE ENTRADA
+-- =========================================================
+
+INSERT INTO TIPO_ENTRADA (
+    NOMBRE, PORCENTAJE_DESCUENTO, REQUIERE_ADULTO
+)
+VALUES ('ADULTO', 0, 'N');
+
+INSERT INTO TIPO_ENTRADA (
+    NOMBRE, PORCENTAJE_DESCUENTO, REQUIERE_ADULTO
+)
+VALUES ('INFANTIL', 25, 'S');
+
+INSERT INTO TIPO_ENTRADA (
+    NOMBRE, PORCENTAJE_DESCUENTO, REQUIERE_ADULTO
+)
+VALUES ('ADULTO MAYOR', 20, 'N');
+
+INSERT INTO TIPO_ENTRADA (
+    NOMBRE, PORCENTAJE_DESCUENTO, REQUIERE_ADULTO
+)
+VALUES ('ESTUDIANTE', 15, 'N');
+
+-- Confirmar la carga.
+COMMIT;
+
+
+SELECT 'MUNICIPIO' AS TABLA, COUNT(*) AS REGISTROS
+FROM MUNICIPIO
+
+UNION ALL
+
+SELECT 'TIPO_PRESTADOR', COUNT(*)
+FROM TIPO_PRESTADOR
+
+UNION ALL
+
+SELECT 'ROL', COUNT(*)
+FROM ROL
+
+UNION ALL
+
+SELECT 'TIPO_ENTRADA', COUNT(*)
+FROM TIPO_ENTRADA;
+
+
+-- =========================================================
+-- 5. PRESTADORES TURISTICOS
+-- DATOS FICTICIOS PARA DEMOSTRACION
+-- =========================================================
+
+INSERT INTO PRESTADOR (
+    NIT, NOMBRE, CORREO,
+    ID_MUNICIPIO, ID_TIPO_PRESTADOR
+)
+SELECT
+    '900100001-1',
+    'Aventura Cafetera Quindio',
+    'contacto@aventuracafetera.example',
+    M.ID_MUNICIPIO,
+    T.ID_TIPO_PRESTADOR
+FROM MUNICIPIO M
+CROSS JOIN TIPO_PRESTADOR T
+WHERE M.NOMBRE = 'Montenegro'
+  AND T.NOMBRE = 'Parque tematico';
+
+INSERT INTO PRESTADOR (
+    NIT, NOMBRE, CORREO,
+    ID_MUNICIPIO, ID_TIPO_PRESTADOR
+)
+SELECT
+    '900100002-2',
+    'Rutas del Cocora',
+    'contacto@rutascocora.example',
+    M.ID_MUNICIPIO,
+    T.ID_TIPO_PRESTADOR
+FROM MUNICIPIO M
+CROSS JOIN TIPO_PRESTADOR T
+WHERE M.NOMBRE = 'Salento'
+  AND T.NOMBRE = 'Operador turistico';
+
+INSERT INTO PRESTADOR (
+    NIT, NOMBRE, CORREO,
+    ID_MUNICIPIO, ID_TIPO_PRESTADOR
+)
+SELECT
+    '900100003-3',
+    'Experiencias Quimbaya',
+    'contacto@experienciasquimbaya.example',
+    M.ID_MUNICIPIO,
+    T.ID_TIPO_PRESTADOR
+FROM MUNICIPIO M
+CROSS JOIN TIPO_PRESTADOR T
+WHERE M.NOMBRE = 'Quimbaya'
+  AND T.NOMBRE = 'Centro recreativo';
+
+INSERT INTO PRESTADOR (
+    NIT, NOMBRE, CORREO,
+    ID_MUNICIPIO, ID_TIPO_PRESTADOR
+)
+SELECT
+    '900100004-4',
+    'Caminos de Filandia',
+    'contacto@caminosfilandia.example',
+    M.ID_MUNICIPIO,
+    T.ID_TIPO_PRESTADOR
+FROM MUNICIPIO M
+CROSS JOIN TIPO_PRESTADOR T
+WHERE M.NOMBRE = 'Filandia'
+  AND T.NOMBRE = 'Agencia de turismo';
+
+INSERT INTO PRESTADOR (
+    NIT, NOMBRE, CORREO,
+    ID_MUNICIPIO, ID_TIPO_PRESTADOR
+)
+SELECT
+    '900100005-5',
+    'Naturaleza y Cafe Calarca',
+    'contacto@naturalezacalarca.example',
+    M.ID_MUNICIPIO,
+    T.ID_TIPO_PRESTADOR
+FROM MUNICIPIO M
+CROSS JOIN TIPO_PRESTADOR T
+WHERE M.NOMBRE = 'Calarca'
+  AND T.NOMBRE = 'Operador turistico';
+
+
+
+-- =========================================================
+-- 6. ATRACCIONES TURISTICAS
+-- =========================================================
+
+INSERT INTO ATRACCION (NOMBRE, DESCRIPCION, ID_PRESTADOR)
+SELECT 'Sendero del Cafe',
+       'Experiencia guiada sobre el cultivo del cafe',
+       ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100001-1';
+
+INSERT INTO ATRACCION (NOMBRE, DESCRIPCION, ID_PRESTADOR)
+SELECT 'Mirador Cafetero',
+       'Recorrido panoramico por el paisaje cafetero',
+       ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100001-1';
+
+INSERT INTO ATRACCION (NOMBRE, DESCRIPCION, ID_PRESTADOR)
+SELECT 'Caminata Valle del Cocora',
+       'Recorrido guiado por senderos naturales',
+       ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100002-2';
+
+INSERT INTO ATRACCION (NOMBRE, DESCRIPCION, ID_PRESTADOR)
+SELECT 'Ruta de los Miradores',
+       'Visita a puntos panoramicos de Salento',
+       ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100002-2';
+
+INSERT INTO ATRACCION (NOMBRE, DESCRIPCION, ID_PRESTADOR)
+SELECT 'Granja Interactiva',
+       'Actividades educativas y recreativas rurales',
+       ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100003-3';
+
+INSERT INTO ATRACCION (NOMBRE, DESCRIPCION, ID_PRESTADOR)
+SELECT 'Experiencia Cultural Quimbaya',
+       'Actividad de interpretacion cultural regional',
+       ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100003-3';
+
+INSERT INTO ATRACCION (NOMBRE, DESCRIPCION, ID_PRESTADOR)
+SELECT 'Recorrido Historico Filandia',
+       'Caminata por la arquitectura y tradiciones locales',
+       ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100004-4';
+
+INSERT INTO ATRACCION (NOMBRE, DESCRIPCION, ID_PRESTADOR)
+SELECT 'Reserva Natural Calarca',
+       'Senderismo y observacion de biodiversidad',
+       ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100005-5';
+
+
+-- =========================================================
+-- 7. PLANES TURISTICOS
+-- =========================================================
+
+INSERT INTO PLAN (NOMBRE, DESCRIPCION, ESTADO, ID_PRESTADOR)
+SELECT 'Dia Cafetero',
+       'Experiencia de naturaleza y cultura cafetera',
+       'ACTIVO', ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100001-1';
+
+INSERT INTO PLAN (NOMBRE, DESCRIPCION, ESTADO, ID_PRESTADOR)
+SELECT 'Aventura Montenegro',
+       'Recorrido por experiencias del municipio',
+       'ACTIVO', ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100001-1';
+
+INSERT INTO PLAN (NOMBRE, DESCRIPCION, ESTADO, ID_PRESTADOR)
+SELECT 'Cocora Natural',
+       'Senderismo y visita a miradores',
+       'ACTIVO', ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100002-2';
+
+INSERT INTO PLAN (NOMBRE, DESCRIPCION, ESTADO, ID_PRESTADOR)
+SELECT 'Tradiciones de Quimbaya',
+       'Experiencias rurales y culturales',
+       'ACTIVO', ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100003-3';
+
+INSERT INTO PLAN (NOMBRE, DESCRIPCION, ESTADO, ID_PRESTADOR)
+SELECT 'Filandia Patrimonial',
+       'Recorrido guiado por el patrimonio local',
+       'INACTIVO', ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100004-4';
+
+INSERT INTO PLAN (NOMBRE, DESCRIPCION, ESTADO, ID_PRESTADOR)
+SELECT 'Calarca Ecologica',
+       'Actividades de naturaleza y senderismo',
+       'ACTIVO', ID_PRESTADOR
+FROM PRESTADOR WHERE NIT = '900100005-5';
+
+COMMIT;
+
+
+
+-- =========================================================
+-- 8. USUARIOS DEL SISTEMA
+-- DATOS FICTICIOS PARA DEMOSTRACION
+-- =========================================================
+
+-- Administrador
+INSERT INTO USUARIO_SISTEMA (
+    CORREO, CLAVE_HASH, ESTADO, ID_ROL
+)
+SELECT
+    'admin@boleteria.example',
+    'PENDIENTE_CONFIGURACION',
+    'ACTIVO',
+    ID_ROL
+FROM ROL
+WHERE NOMBRE = 'ADMINISTRADOR';
+
+-- Operador
+INSERT INTO USUARIO_SISTEMA (
+    CORREO, CLAVE_HASH, ESTADO, ID_ROL
+)
+SELECT
+    'operador@boleteria.example',
+    'PENDIENTE_CONFIGURACION',
+    'ACTIVO',
+    ID_ROL
+FROM ROL
+WHERE NOMBRE = 'OPERADOR';
+
+-- Clientes
+INSERT INTO USUARIO_SISTEMA (
+    CORREO, CLAVE_HASH, ESTADO, ID_ROL
+)
+SELECT
+    'laura.gomez@example.com',
+    'PENDIENTE_CONFIGURACION',
+    'ACTIVO',
+    ID_ROL
+FROM ROL WHERE NOMBRE = 'CLIENTE';
+
+INSERT INTO USUARIO_SISTEMA (
+    CORREO, CLAVE_HASH, ESTADO, ID_ROL
+)
+SELECT
+    'andres.martinez@example.com',
+    'PENDIENTE_CONFIGURACION',
+    'ACTIVO',
+    ID_ROL
+FROM ROL WHERE NOMBRE = 'CLIENTE';
+
+INSERT INTO USUARIO_SISTEMA (
+    CORREO, CLAVE_HASH, ESTADO, ID_ROL
+)
+SELECT
+    'camila.rodriguez@example.com',
+    'PENDIENTE_CONFIGURACION',
+    'ACTIVO',
+    ID_ROL
+FROM ROL WHERE NOMBRE = 'CLIENTE';
+
+INSERT INTO USUARIO_SISTEMA (
+    CORREO, CLAVE_HASH, ESTADO, ID_ROL
+)
+SELECT
+    'santiago.lopez@example.com',
+    'PENDIENTE_CONFIGURACION',
+    'ACTIVO',
+    ID_ROL
+FROM ROL WHERE NOMBRE = 'CLIENTE';
+
+INSERT INTO USUARIO_SISTEMA (
+    CORREO, CLAVE_HASH, ESTADO, ID_ROL
+)
+SELECT
+    'valentina.torres@example.com',
+    'PENDIENTE_CONFIGURACION',
+    'ACTIVO',
+    ID_ROL
+FROM ROL WHERE NOMBRE = 'CLIENTE';
+
+INSERT INTO USUARIO_SISTEMA (
+    CORREO, CLAVE_HASH, ESTADO, ID_ROL
+)
+SELECT
+    'daniel.ramirez@example.com',
+    'PENDIENTE_CONFIGURACION',
+    'ACTIVO',
+    ID_ROL
+FROM ROL WHERE NOMBRE = 'CLIENTE';
+
+
+
+-- =========================================================
+-- 9. PERFILES DE CLIENTE
+-- =========================================================
+
+INSERT INTO PERFIL_CLIENTE (
+    DOCUMENTO, NOMBRE, TELEFONO, ID_USUARIO
+)
+SELECT
+    '1000000001', 'Laura Gomez', '3000000001',
+    ID_USUARIO
+FROM USUARIO_SISTEMA
+WHERE CORREO = 'laura.gomez@example.com';
+
+INSERT INTO PERFIL_CLIENTE (
+    DOCUMENTO, NOMBRE, TELEFONO, ID_USUARIO
+)
+SELECT
+    '1000000002', 'Andres Martinez', '3000000002',
+    ID_USUARIO
+FROM USUARIO_SISTEMA
+WHERE CORREO = 'andres.martinez@example.com';
+
+INSERT INTO PERFIL_CLIENTE (
+    DOCUMENTO, NOMBRE, TELEFONO, ID_USUARIO
+)
+SELECT
+    '1000000003', 'Camila Rodriguez', '3000000003',
+    ID_USUARIO
+FROM USUARIO_SISTEMA
+WHERE CORREO = 'camila.rodriguez@example.com';
+
+INSERT INTO PERFIL_CLIENTE (
+    DOCUMENTO, NOMBRE, TELEFONO, ID_USUARIO
+)
+SELECT
+    '1000000004', 'Santiago Lopez', '3000000004',
+    ID_USUARIO
+FROM USUARIO_SISTEMA
+WHERE CORREO = 'santiago.lopez@example.com';
+
+INSERT INTO PERFIL_CLIENTE (
+    DOCUMENTO, NOMBRE, TELEFONO, ID_USUARIO
+)
+SELECT
+    '1000000005', 'Valentina Torres', '3000000005',
+    ID_USUARIO
+FROM USUARIO_SISTEMA
+WHERE CORREO = 'valentina.torres@example.com';
+
+INSERT INTO PERFIL_CLIENTE (
+    DOCUMENTO, NOMBRE, TELEFONO, ID_USUARIO
+)
+SELECT
+    '1000000006', 'Daniel Ramirez', '3000000006',
+    ID_USUARIO
+FROM USUARIO_SISTEMA
+WHERE CORREO = 'daniel.ramirez@example.com';
+
+COMMIT;
+
+
+
+-- =========================================================
+-- 10. PROGRAMACION DE FUNCIONES TURISTICAS
+-- =========================================================
+
+-- Sendero del Cafe - dos fechas diferentes
+INSERT INTO FUNCION (
+    FECHA, HORA_APERTURA, HORA_CIERRE,
+    ESTADO, ID_ATRACCION
+)
+SELECT DATE '2026-11-20', '08:00', '12:00',
+       'PROGRAMADA', ID_ATRACCION
+FROM ATRACCION
+WHERE NOMBRE = 'Sendero del Cafe';
+
+INSERT INTO FUNCION (
+    FECHA, HORA_APERTURA, HORA_CIERRE,
+    ESTADO, ID_ATRACCION
+)
+SELECT DATE '2026-12-05', '09:00', '13:00',
+       'PROGRAMADA', ID_ATRACCION
+FROM ATRACCION
+WHERE NOMBRE = 'Sendero del Cafe';
+
+-- Mirador Cafetero
+INSERT INTO FUNCION (
+    FECHA, HORA_APERTURA, HORA_CIERRE,
+    ESTADO, ID_ATRACCION
+)
+SELECT DATE '2026-11-22', '14:00', '18:00',
+       'PROGRAMADA', ID_ATRACCION
+FROM ATRACCION
+WHERE NOMBRE = 'Mirador Cafetero';
+
+-- Caminata Valle del Cocora - dos fechas
+INSERT INTO FUNCION (
+    FECHA, HORA_APERTURA, HORA_CIERRE,
+    ESTADO, ID_ATRACCION
+)
+SELECT DATE '2026-11-28', '06:00', '11:00',
+       'PROGRAMADA', ID_ATRACCION
+FROM ATRACCION
+WHERE NOMBRE = 'Caminata Valle del Cocora';
+
+INSERT INTO FUNCION (
+    FECHA, HORA_APERTURA, HORA_CIERRE,
+    ESTADO, ID_ATRACCION
+)
+SELECT DATE '2026-12-12', '07:00', '12:00',
+       'PROGRAMADA', ID_ATRACCION
+FROM ATRACCION
+WHERE NOMBRE = 'Caminata Valle del Cocora';
+
+-- Ruta de los Miradores
+INSERT INTO FUNCION (
+    FECHA, HORA_APERTURA, HORA_CIERRE,
+    ESTADO, ID_ATRACCION
+)
+SELECT DATE '2026-12-06', '08:00', '12:00',
+       'PROGRAMADA', ID_ATRACCION
+FROM ATRACCION
+WHERE NOMBRE = 'Ruta de los Miradores';
+
+-- Granja Interactiva
+INSERT INTO FUNCION (
+    FECHA, HORA_APERTURA, HORA_CIERRE,
+    ESTADO, ID_ATRACCION
+)
+SELECT DATE '2026-11-29', '09:00', '17:00',
+       'PROGRAMADA', ID_ATRACCION
+FROM ATRACCION
+WHERE NOMBRE = 'Granja Interactiva';
+
+-- Experiencia Cultural Quimbaya
+INSERT INTO FUNCION (
+    FECHA, HORA_APERTURA, HORA_CIERRE,
+    ESTADO, ID_ATRACCION
+)
+SELECT DATE '2026-12-13', '10:00', '15:00',
+       'PROGRAMADA', ID_ATRACCION
+FROM ATRACCION
+WHERE NOMBRE = 'Experiencia Cultural Quimbaya';
+
+-- Recorrido Historico Filandia
+INSERT INTO FUNCION (
+    FECHA, HORA_APERTURA, HORA_CIERRE,
+    ESTADO, ID_ATRACCION
+)
+SELECT DATE '2026-12-19', '09:00', '13:00',
+       'PROGRAMADA', ID_ATRACCION
+FROM ATRACCION
+WHERE NOMBRE = 'Recorrido Historico Filandia';
+
+-- Reserva Natural Calarca
+INSERT INTO FUNCION (
+    FECHA, HORA_APERTURA, HORA_CIERRE,
+    ESTADO, ID_ATRACCION
+)
+SELECT DATE '2027-01-16', '07:00', '14:00',
+       'PROGRAMADA', ID_ATRACCION
+FROM ATRACCION
+WHERE NOMBRE = 'Reserva Natural Calarca';
+
+COMMIT;
+
+
+
+-- =========================================================
+-- 11. ZONAS GENERALES DE LAS FUNCIONES
+-- =========================================================
+
+INSERT INTO ZONA (
+    NOMBRE, AFORO, PRECIO, ID_FUNCION
+)
+SELECT
+    'GENERAL',
+
+    CASE A.NOMBRE
+        WHEN 'Sendero del Cafe' THEN 80
+        WHEN 'Mirador Cafetero' THEN 45
+        WHEN 'Caminata Valle del Cocora' THEN 35
+        WHEN 'Ruta de los Miradores' THEN 40
+        WHEN 'Granja Interactiva' THEN 120
+        WHEN 'Experiencia Cultural Quimbaya' THEN 65
+        WHEN 'Recorrido Historico Filandia' THEN 30
+        WHEN 'Reserva Natural Calarca' THEN 50
+    END,
+
+    CASE A.NOMBRE
+        WHEN 'Sendero del Cafe' THEN 45000
+        WHEN 'Mirador Cafetero' THEN 35000
+        WHEN 'Caminata Valle del Cocora' THEN 60000
+        WHEN 'Ruta de los Miradores' THEN 40000
+        WHEN 'Granja Interactiva' THEN 55000
+        WHEN 'Experiencia Cultural Quimbaya' THEN 38000
+        WHEN 'Recorrido Historico Filandia' THEN 30000
+        WHEN 'Reserva Natural Calarca' THEN 50000
+    END,
+
+    F.ID_FUNCION
+FROM FUNCION F
+JOIN ATRACCION A
+    ON F.ID_ATRACCION = A.ID_ATRACCION;
+
+-- Se crea una zona GENERAL por cada funcion.
+-- Resultado esperado: 10 zonas.
+
+
+-- =========================================================
+-- 12. ZONAS VIP
+-- =========================================================
+
+INSERT INTO ZONA (
+    NOMBRE, AFORO, PRECIO, ID_FUNCION
+)
+SELECT
+    'VIP',
+
+    CASE A.NOMBRE
+        WHEN 'Sendero del Cafe' THEN 20
+        WHEN 'Mirador Cafetero' THEN 15
+        WHEN 'Caminata Valle del Cocora' THEN 10
+        WHEN 'Granja Interactiva' THEN 30
+    END,
+
+    CASE A.NOMBRE
+        WHEN 'Sendero del Cafe' THEN 75000
+        WHEN 'Mirador Cafetero' THEN 60000
+        WHEN 'Caminata Valle del Cocora' THEN 95000
+        WHEN 'Granja Interactiva' THEN 85000
+    END,
+
+    F.ID_FUNCION
+FROM FUNCION F
+JOIN ATRACCION A
+    ON F.ID_ATRACCION = A.ID_ATRACCION
+WHERE A.NOMBRE IN (
+    'Sendero del Cafe',
+    'Mirador Cafetero',
+    'Caminata Valle del Cocora',
+    'Granja Interactiva'
+);
+
+-- Resultado esperado: 6 zonas VIP.
+
+COMMIT;
+
+
+
+-- =========================================================
+-- 13. COMBOS TURISTICOS
+-- =========================================================
+
+INSERT INTO COMBO (
+    NOMBRE, PRECIO, DIAS_VIGENCIA, ESTADO
+)
+VALUES (
+    'Experiencia Cafetera',
+    90000, 45, 'INACTIVO'
+);
+
+INSERT INTO COMBO (
+    NOMBRE, PRECIO, DIAS_VIGENCIA, ESTADO
+)
+VALUES (
+    'Aventura por el Quindio',
+    180000, 90, 'INACTIVO'
+);
+
+INSERT INTO COMBO (
+    NOMBRE, PRECIO, DIAS_VIGENCIA, ESTADO
+)
+VALUES (
+    'Naturaleza y Tradicion',
+    110000, 60, 'INACTIVO'
+);
+
+
+-- =========================================================
+-- 14. RELACION ENTRE COMBOS Y ATRACCIONES
+-- =========================================================
+
+-- COMBO 1: Experiencia Cafetera (100 %)
+
+INSERT INTO COMBO_ATRACCION (
+    ID_COMBO, ID_ATRACCION, PORCENTAJE_PRECIO
+)
+SELECT C.ID_COMBO, A.ID_ATRACCION, 60
+FROM COMBO C
+CROSS JOIN ATRACCION A
+WHERE C.NOMBRE = 'Experiencia Cafetera'
+  AND A.NOMBRE = 'Sendero del Cafe';
+
+INSERT INTO COMBO_ATRACCION (
+    ID_COMBO, ID_ATRACCION, PORCENTAJE_PRECIO
+)
+SELECT C.ID_COMBO, A.ID_ATRACCION, 40
+FROM COMBO C
+CROSS JOIN ATRACCION A
+WHERE C.NOMBRE = 'Experiencia Cafetera'
+  AND A.NOMBRE = 'Mirador Cafetero';
+
+
+-- COMBO 2: Aventura por el Quindio (100 %)
+
+INSERT INTO COMBO_ATRACCION (
+    ID_COMBO, ID_ATRACCION, PORCENTAJE_PRECIO
+)
+SELECT C.ID_COMBO, A.ID_ATRACCION, 40
+FROM COMBO C
+CROSS JOIN ATRACCION A
+WHERE C.NOMBRE = 'Aventura por el Quindio'
+  AND A.NOMBRE = 'Caminata Valle del Cocora';
+
+INSERT INTO COMBO_ATRACCION (
+    ID_COMBO, ID_ATRACCION, PORCENTAJE_PRECIO
+)
+SELECT C.ID_COMBO, A.ID_ATRACCION, 35
+FROM COMBO C
+CROSS JOIN ATRACCION A
+WHERE C.NOMBRE = 'Aventura por el Quindio'
+  AND A.NOMBRE = 'Granja Interactiva';
+
+INSERT INTO COMBO_ATRACCION (
+    ID_COMBO, ID_ATRACCION, PORCENTAJE_PRECIO
+)
+SELECT C.ID_COMBO, A.ID_ATRACCION, 25
+FROM COMBO C
+CROSS JOIN ATRACCION A
+WHERE C.NOMBRE = 'Aventura por el Quindio'
+  AND A.NOMBRE = 'Ruta de los Miradores';
+
+
+-- COMBO 3: Naturaleza y Tradicion (100 %)
+
+INSERT INTO COMBO_ATRACCION (
+    ID_COMBO, ID_ATRACCION, PORCENTAJE_PRECIO
+)
+SELECT C.ID_COMBO, A.ID_ATRACCION, 55
+FROM COMBO C
+CROSS JOIN ATRACCION A
+WHERE C.NOMBRE = 'Naturaleza y Tradicion'
+  AND A.NOMBRE = 'Reserva Natural Calarca';
+
+INSERT INTO COMBO_ATRACCION (
+    ID_COMBO, ID_ATRACCION, PORCENTAJE_PRECIO
+)
+SELECT C.ID_COMBO, A.ID_ATRACCION, 45
+FROM COMBO C
+CROSS JOIN ATRACCION A
+WHERE C.NOMBRE = 'Naturaleza y Tradicion'
+  AND A.NOMBRE = 'Recorrido Historico Filandia';
+
+
+-- Activar los combos correctamente configurados.
+UPDATE COMBO
+SET ESTADO = 'ACTIVO'
+WHERE NOMBRE IN (
+    'Experiencia Cafetera',
+    'Aventura por el Quindio',
+    'Naturaleza y Tradicion'
+);
+
+COMMIT;
+
+
+
+-- =========================================================
+-- 15. RESERVAS DE CLIENTES
+-- DATOS FICTICIOS DE DEMOSTRACION
+-- =========================================================
+
+-- Reserva 1: Laura - Dia Cafetero
+INSERT INTO RESERVA (
+    FECHA_HORA, ESTADO, ID_PERFIL, ID_PLAN
+)
+SELECT
+    TIMESTAMP '2026-10-20 09:30:00',
+    'CONFIRMADA',
+    P.ID_PERFIL,
+    PL.ID_PLAN
+FROM PERFIL_CLIENTE P
+CROSS JOIN PLAN PL
+WHERE P.DOCUMENTO = '1000000001'
+  AND PL.NOMBRE = 'Dia Cafetero';
+
+-- Reserva 2: Andres - Cocora Natural
+INSERT INTO RESERVA (
+    FECHA_HORA, ESTADO, ID_PERFIL, ID_PLAN
+)
+SELECT
+    TIMESTAMP '2026-10-25 14:15:00',
+    'CONFIRMADA',
+    P.ID_PERFIL,
+    PL.ID_PLAN
+FROM PERFIL_CLIENTE P
+CROSS JOIN PLAN PL
+WHERE P.DOCUMENTO = '1000000002'
+  AND PL.NOMBRE = 'Cocora Natural';
+
+-- Reserva 3: Camila - sin plan
+INSERT INTO RESERVA (
+    FECHA_HORA, ESTADO, ID_PERFIL, ID_PLAN
+)
+SELECT
+    TIMESTAMP '2026-10-28 11:20:00',
+    'CONFIRMADA',
+    P.ID_PERFIL,
+    NULL
+FROM PERFIL_CLIENTE P
+WHERE P.DOCUMENTO = '1000000003';
+
+-- Reserva 4: Laura - Aventura Montenegro
+INSERT INTO RESERVA (
+    FECHA_HORA, ESTADO, ID_PERFIL, ID_PLAN
+)
+SELECT
+    TIMESTAMP '2026-11-01 10:00:00',
+    'CONFIRMADA',
+    P.ID_PERFIL,
+    PL.ID_PLAN
+FROM PERFIL_CLIENTE P
+CROSS JOIN PLAN PL
+WHERE P.DOCUMENTO = '1000000001'
+  AND PL.NOMBRE = 'Aventura Montenegro';
+
+-- Reserva 5: Santiago - cancelada
+INSERT INTO RESERVA (
+    FECHA_HORA, ESTADO, ID_PERFIL, ID_PLAN
+)
+SELECT
+    TIMESTAMP '2026-11-02 16:40:00',
+    'CANCELADA',
+    P.ID_PERFIL,
+    NULL
+FROM PERFIL_CLIENTE P
+WHERE P.DOCUMENTO = '1000000004';
+
+-- Reserva 6: Valentina - Tradiciones de Quimbaya
+INSERT INTO RESERVA (
+    FECHA_HORA, ESTADO, ID_PERFIL, ID_PLAN
+)
+SELECT
+    TIMESTAMP '2026-11-03 08:45:00',
+    'CONFIRMADA',
+    P.ID_PERFIL,
+    PL.ID_PLAN
+FROM PERFIL_CLIENTE P
+CROSS JOIN PLAN PL
+WHERE P.DOCUMENTO = '1000000005'
+  AND PL.NOMBRE = 'Tradiciones de Quimbaya';
+
+-- Reserva 7: Daniel - expirada
+INSERT INTO RESERVA (
+    FECHA_HORA, ESTADO, ID_PERFIL, ID_PLAN
+)
+SELECT
+    TIMESTAMP '2026-11-03 15:10:00',
+    'EXPIRADA',
+    P.ID_PERFIL,
+    NULL
+FROM PERFIL_CLIENTE P
+WHERE P.DOCUMENTO = '1000000006';
+
+-- Reserva 8: Andres - otra reserva
+INSERT INTO RESERVA (
+    FECHA_HORA, ESTADO, ID_PERFIL, ID_PLAN
+)
+SELECT
+    TIMESTAMP '2026-11-04 12:30:00',
+    'CONFIRMADA',
+    P.ID_PERFIL,
+    PL.ID_PLAN
+FROM PERFIL_CLIENTE P
+CROSS JOIN PLAN PL
+WHERE P.DOCUMENTO = '1000000002'
+  AND PL.NOMBRE = 'Cocora Natural';
+
+-- Reserva 9: Laura - tercera reserva
+INSERT INTO RESERVA (
+    FECHA_HORA, ESTADO, ID_PERFIL, ID_PLAN
+)
+SELECT
+    TIMESTAMP '2026-11-05 09:10:00',
+    'CONFIRMADA',
+    P.ID_PERFIL,
+    PL.ID_PLAN
+FROM PERFIL_CLIENTE P
+CROSS JOIN PLAN PL
+WHERE P.DOCUMENTO = '1000000001'
+  AND PL.NOMBRE = 'Dia Cafetero';
+
+-- Reserva 10: Camila - otra reserva sin plan
+INSERT INTO RESERVA (
+    FECHA_HORA, ESTADO, ID_PERFIL, ID_PLAN
+)
+SELECT
+    TIMESTAMP '2026-11-05 17:25:00',
+    'CONFIRMADA',
+    P.ID_PERFIL,
+    NULL
+FROM PERFIL_CLIENTE P
+WHERE P.DOCUMENTO = '1000000003';
+
+COMMIT;
+
+
+
+-- =========================================================
+-- 16. BOLETAS DE DEMOSTRACION
+-- PRIMER GRUPO: ENTRADAS INDIVIDUALES
+-- =========================================================
+
+-- BOLETA 1: Laura, adulta, Sendero del Cafe
+INSERT INTO BOLETA (
+    CODIGO, ESTADO, PRECIO_PAGADO,
+    ID_RESERVA, ID_ZONA, ID_TIPO_ENTRADA, ID_COMBO
+)
+SELECT
+    RAWTOHEX(SYS_GUID()),
+    'VENDIDA',
+    ROUND(Z.PRECIO * (1 - T.PORCENTAJE_DESCUENTO / 100), 2),
+    R.ID_RESERVA,
+    Z.ID_ZONA,
+    T.ID_TIPO_ENTRADA,
+    NULL
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+CROSS JOIN ZONA Z
+JOIN FUNCION F ON F.ID_FUNCION = Z.ID_FUNCION
+JOIN ATRACCION A ON A.ID_ATRACCION = F.ID_ATRACCION
+CROSS JOIN TIPO_ENTRADA T
+WHERE P.DOCUMENTO = '1000000001'
+  AND R.FECHA_HORA = TIMESTAMP '2026-10-20 09:30:00'
+  AND A.NOMBRE = 'Sendero del Cafe'
+  AND F.FECHA = DATE '2026-11-20'
+  AND Z.NOMBRE = 'GENERAL'
+  AND T.NOMBRE = 'ADULTO'
+  AND R.ESTADO = 'CONFIRMADA';
+
+-- BOLETA 2: Laura, infantil, misma funcion
+INSERT INTO BOLETA (
+    CODIGO, ESTADO, PRECIO_PAGADO,
+    ID_RESERVA, ID_ZONA, ID_TIPO_ENTRADA, ID_COMBO
+)
+SELECT
+    RAWTOHEX(SYS_GUID()),
+    'VENDIDA',
+    ROUND(Z.PRECIO * (1 - T.PORCENTAJE_DESCUENTO / 100), 2),
+    R.ID_RESERVA,
+    Z.ID_ZONA,
+    T.ID_TIPO_ENTRADA,
+    NULL
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+CROSS JOIN ZONA Z
+JOIN FUNCION F ON F.ID_FUNCION = Z.ID_FUNCION
+JOIN ATRACCION A ON A.ID_ATRACCION = F.ID_ATRACCION
+CROSS JOIN TIPO_ENTRADA T
+WHERE P.DOCUMENTO = '1000000001'
+  AND R.FECHA_HORA = TIMESTAMP '2026-10-20 09:30:00'
+  AND A.NOMBRE = 'Sendero del Cafe'
+  AND F.FECHA = DATE '2026-11-20'
+  AND Z.NOMBRE = 'GENERAL'
+  AND T.NOMBRE = 'INFANTIL'
+  AND R.ESTADO = 'CONFIRMADA';
+
+-- BOLETA 3: Andres, Caminata Valle del Cocora
+INSERT INTO BOLETA (
+    CODIGO, ESTADO, PRECIO_PAGADO,
+    ID_RESERVA, ID_ZONA, ID_TIPO_ENTRADA, ID_COMBO
+)
+SELECT
+    RAWTOHEX(SYS_GUID()),
+    'VENDIDA',
+    ROUND(Z.PRECIO * (1 - T.PORCENTAJE_DESCUENTO / 100), 2),
+    R.ID_RESERVA,
+    Z.ID_ZONA,
+    T.ID_TIPO_ENTRADA,
+    NULL
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+CROSS JOIN ZONA Z
+JOIN FUNCION F ON F.ID_FUNCION = Z.ID_FUNCION
+JOIN ATRACCION A ON A.ID_ATRACCION = F.ID_ATRACCION
+CROSS JOIN TIPO_ENTRADA T
+WHERE P.DOCUMENTO = '1000000002'
+  AND R.FECHA_HORA = TIMESTAMP '2026-10-25 14:15:00'
+  AND A.NOMBRE = 'Caminata Valle del Cocora'
+  AND F.FECHA = DATE '2026-11-28'
+  AND Z.NOMBRE = 'GENERAL'
+  AND T.NOMBRE = 'ADULTO'
+  AND R.ESTADO = 'CONFIRMADA';
+
+-- BOLETA 4: Camila, Mirador Cafetero
+INSERT INTO BOLETA (
+    CODIGO, ESTADO, PRECIO_PAGADO,
+    ID_RESERVA, ID_ZONA, ID_TIPO_ENTRADA, ID_COMBO
+)
+SELECT
+    RAWTOHEX(SYS_GUID()),
+    'VENDIDA',
+    ROUND(Z.PRECIO * (1 - T.PORCENTAJE_DESCUENTO / 100), 2),
+    R.ID_RESERVA,
+    Z.ID_ZONA,
+    T.ID_TIPO_ENTRADA,
+    NULL
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+CROSS JOIN ZONA Z
+JOIN FUNCION F ON F.ID_FUNCION = Z.ID_FUNCION
+JOIN ATRACCION A ON A.ID_ATRACCION = F.ID_ATRACCION
+CROSS JOIN TIPO_ENTRADA T
+WHERE P.DOCUMENTO = '1000000003'
+  AND R.FECHA_HORA = TIMESTAMP '2026-10-28 11:20:00'
+  AND A.NOMBRE = 'Mirador Cafetero'
+  AND F.FECHA = DATE '2026-11-22'
+  AND Z.NOMBRE = 'GENERAL'
+  AND T.NOMBRE = 'ADULTO'
+  AND R.ESTADO = 'CONFIRMADA';
+
+-- BOLETA 5: Laura, Sendero del Cafe VIP
+INSERT INTO BOLETA (
+    CODIGO, ESTADO, PRECIO_PAGADO,
+    ID_RESERVA, ID_ZONA, ID_TIPO_ENTRADA, ID_COMBO
+)
+SELECT
+    RAWTOHEX(SYS_GUID()),
+    'VENDIDA',
+    ROUND(Z.PRECIO * (1 - T.PORCENTAJE_DESCUENTO / 100), 2),
+    R.ID_RESERVA,
+    Z.ID_ZONA,
+    T.ID_TIPO_ENTRADA,
+    NULL
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+CROSS JOIN ZONA Z
+JOIN FUNCION F ON F.ID_FUNCION = Z.ID_FUNCION
+JOIN ATRACCION A ON A.ID_ATRACCION = F.ID_ATRACCION
+CROSS JOIN TIPO_ENTRADA T
+WHERE P.DOCUMENTO = '1000000001'
+  AND R.FECHA_HORA = TIMESTAMP '2026-11-01 10:00:00'
+  AND A.NOMBRE = 'Sendero del Cafe'
+  AND F.FECHA = DATE '2026-12-05'
+  AND Z.NOMBRE = 'VIP'
+  AND T.NOMBRE = 'ADULTO'
+  AND R.ESTADO = 'CONFIRMADA';
+
+-- BOLETA 6: Valentina, Granja Interactiva
+INSERT INTO BOLETA (
+    CODIGO, ESTADO, PRECIO_PAGADO,
+    ID_RESERVA, ID_ZONA, ID_TIPO_ENTRADA, ID_COMBO
+)
+SELECT
+    RAWTOHEX(SYS_GUID()),
+    'VENDIDA',
+    ROUND(Z.PRECIO * (1 - T.PORCENTAJE_DESCUENTO / 100), 2),
+    R.ID_RESERVA,
+    Z.ID_ZONA,
+    T.ID_TIPO_ENTRADA,
+    NULL
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+CROSS JOIN ZONA Z
+JOIN FUNCION F ON F.ID_FUNCION = Z.ID_FUNCION
+JOIN ATRACCION A ON A.ID_ATRACCION = F.ID_ATRACCION
+CROSS JOIN TIPO_ENTRADA T
+WHERE P.DOCUMENTO = '1000000005'
+  AND R.FECHA_HORA = TIMESTAMP '2026-11-03 08:45:00'
+  AND A.NOMBRE = 'Granja Interactiva'
+  AND F.FECHA = DATE '2026-11-29'
+  AND Z.NOMBRE = 'GENERAL'
+  AND T.NOMBRE = 'ADULTO'
+  AND R.ESTADO = 'CONFIRMADA';
+
+COMMIT;
+
+
+-- =========================================================
+-- 17. BOLETAS ASOCIADAS A COMBOS TURISTICOS
+-- =========================================================
+
+INSERT INTO BOLETA (
+    CODIGO,
+    ESTADO,
+    PRECIO_PAGADO,
+    ID_RESERVA,
+    ID_ZONA,
+    ID_TIPO_ENTRADA,
+    ID_COMBO
+)
+SELECT
+    RAWTOHEX(SYS_GUID()),
+    'VENDIDA',
+    ROUND(
+        C.PRECIO * CA.PORCENTAJE_PRECIO / 100
+        * (1 - T.PORCENTAJE_DESCUENTO / 100),
+        2
+    ),
+    R.ID_RESERVA,
+    Z.ID_ZONA,
+    T.ID_TIPO_ENTRADA,
+    C.ID_COMBO
+FROM (
+    SELECT '1000000001' AS DOCUMENTO,
+           TIMESTAMP '2026-11-05 09:10:00' AS FECHA_RESERVA,
+           'Experiencia Cafetera' AS COMBO,
+           'Sendero del Cafe' AS ATRACCION,
+           DATE '2026-12-05' AS FECHA_FUNCION
+    FROM DUAL
+
+    UNION ALL
+
+    SELECT '1000000001',
+           TIMESTAMP '2026-11-05 09:10:00',
+           'Experiencia Cafetera',
+           'Mirador Cafetero',
+           DATE '2026-11-22'
+    FROM DUAL
+
+    UNION ALL
+
+    SELECT '1000000002',
+           TIMESTAMP '2026-11-04 12:30:00',
+           'Aventura por el Quindio',
+           'Caminata Valle del Cocora',
+           DATE '2026-12-12'
+    FROM DUAL
+
+    UNION ALL
+
+    SELECT '1000000002',
+           TIMESTAMP '2026-11-04 12:30:00',
+           'Aventura por el Quindio',
+           'Granja Interactiva',
+           DATE '2026-11-29'
+    FROM DUAL
+
+    UNION ALL
+
+    SELECT '1000000002',
+           TIMESTAMP '2026-11-04 12:30:00',
+           'Aventura por el Quindio',
+           'Ruta de los Miradores',
+           DATE '2026-12-06'
+    FROM DUAL
+) DATOS
+
+JOIN PERFIL_CLIENTE P
+    ON P.DOCUMENTO = DATOS.DOCUMENTO
+
+JOIN RESERVA R
+    ON R.ID_PERFIL = P.ID_PERFIL
+   AND R.FECHA_HORA = DATOS.FECHA_RESERVA
+   AND R.ESTADO = 'CONFIRMADA'
+
+JOIN COMBO C
+    ON C.NOMBRE = DATOS.COMBO
+   AND C.ESTADO = 'ACTIVO'
+
+JOIN ATRACCION A
+    ON A.NOMBRE = DATOS.ATRACCION
+
+JOIN COMBO_ATRACCION CA
+    ON CA.ID_COMBO = C.ID_COMBO
+   AND CA.ID_ATRACCION = A.ID_ATRACCION
+
+JOIN FUNCION F
+    ON F.ID_ATRACCION = A.ID_ATRACCION
+   AND F.FECHA = DATOS.FECHA_FUNCION
+   AND F.ESTADO = 'PROGRAMADA'
+
+JOIN ZONA Z
+    ON Z.ID_FUNCION = F.ID_FUNCION
+   AND Z.NOMBRE = 'GENERAL'
+
+JOIN TIPO_ENTRADA T
+    ON T.NOMBRE = 'ADULTO'
+
+WHERE TRUNC(F.FECHA)
+      BETWEEN TRUNC(CAST(R.FECHA_HORA AS DATE))
+      AND TRUNC(CAST(R.FECHA_HORA AS DATE))
+          + C.DIAS_VIGENCIA - 1;
+
+COMMIT;
+
+
+-- =========================================================
+-- 18. BOLETAS CON DESCUENTOS
+-- =========================================================
+
+INSERT INTO BOLETA (
+    CODIGO,
+    ESTADO,
+    PRECIO_PAGADO,
+    ID_RESERVA,
+    ID_ZONA,
+    ID_TIPO_ENTRADA,
+    ID_COMBO
+)
+SELECT
+    RAWTOHEX(SYS_GUID()),
+    'VENDIDA',
+    ROUND(
+        Z.PRECIO *
+        (1 - T.PORCENTAJE_DESCUENTO / 100),
+        2
+    ),
+    R.ID_RESERVA,
+    Z.ID_ZONA,
+    T.ID_TIPO_ENTRADA,
+    NULL
+FROM (
+    SELECT
+        '1000000003' AS DOCUMENTO,
+        TIMESTAMP '2026-10-28 11:20:00' AS FECHA_RESERVA,
+        'Mirador Cafetero' AS ATRACCION,
+        DATE '2026-11-22' AS FECHA_FUNCION,
+        'ADULTO MAYOR' AS TIPO_ENTRADA
+    FROM DUAL
+
+    UNION ALL
+
+    SELECT
+        '1000000002',
+        TIMESTAMP '2026-10-25 14:15:00',
+        'Caminata Valle del Cocora',
+        DATE '2026-11-28',
+        'ESTUDIANTE'
+    FROM DUAL
+
+    UNION ALL
+
+    SELECT
+        '1000000005',
+        TIMESTAMP '2026-11-03 08:45:00',
+        'Granja Interactiva',
+        DATE '2026-11-29',
+        'ESTUDIANTE'
+    FROM DUAL
+) DATOS
+
+JOIN PERFIL_CLIENTE P
+    ON P.DOCUMENTO = DATOS.DOCUMENTO
+
+JOIN RESERVA R
+    ON R.ID_PERFIL = P.ID_PERFIL
+   AND R.FECHA_HORA = DATOS.FECHA_RESERVA
+   AND R.ESTADO = 'CONFIRMADA'
+
+JOIN ATRACCION A
+    ON A.NOMBRE = DATOS.ATRACCION
+
+JOIN FUNCION F
+    ON F.ID_ATRACCION = A.ID_ATRACCION
+   AND F.FECHA = DATOS.FECHA_FUNCION
+
+JOIN ZONA Z
+    ON Z.ID_FUNCION = F.ID_FUNCION
+   AND Z.NOMBRE = 'GENERAL'
+
+JOIN TIPO_ENTRADA T
+    ON T.NOMBRE = DATOS.TIPO_ENTRADA;
+
+COMMIT;
+
+
+
+-- =========================================================
+-- 19. NOTIFICACIONES DEL SISTEMA
+-- =========================================================
+
+INSERT INTO NOTIFICACION (
+    ASUNTO, MENSAJE, FECHA_HORA,
+    LEIDA, ID_USUARIO, ID_RESERVA
+)
+SELECT
+    'Reserva confirmada',
+    'Tu reserva ha sido confirmada correctamente.',
+    R.FECHA_HORA + INTERVAL '2' MINUTE,
+    'S',
+    U.ID_USUARIO,
+    R.ID_RESERVA
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+JOIN USUARIO_SISTEMA U ON U.ID_USUARIO = P.ID_USUARIO
+WHERE P.DOCUMENTO = '1000000001'
+  AND R.FECHA_HORA = TIMESTAMP '2026-10-20 09:30:00';
+
+INSERT INTO NOTIFICACION (
+    ASUNTO, MENSAJE, FECHA_HORA,
+    LEIDA, ID_USUARIO, ID_RESERVA
+)
+SELECT
+    'Compra registrada',
+    'Tus entradas para la Caminata Valle del Cocora estan disponibles.',
+    R.FECHA_HORA + INTERVAL '3' MINUTE,
+    'N',
+    U.ID_USUARIO,
+    R.ID_RESERVA
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+JOIN USUARIO_SISTEMA U ON U.ID_USUARIO = P.ID_USUARIO
+WHERE P.DOCUMENTO = '1000000002'
+  AND R.FECHA_HORA = TIMESTAMP '2026-10-25 14:15:00';
+
+INSERT INTO NOTIFICACION (
+    ASUNTO, MENSAJE, FECHA_HORA,
+    LEIDA, ID_USUARIO, ID_RESERVA
+)
+SELECT
+    'Reserva confirmada',
+    'Tu reserva para el Mirador Cafetero ha sido confirmada.',
+    R.FECHA_HORA + INTERVAL '1' MINUTE,
+    'S',
+    U.ID_USUARIO,
+    R.ID_RESERVA
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+JOIN USUARIO_SISTEMA U ON U.ID_USUARIO = P.ID_USUARIO
+WHERE P.DOCUMENTO = '1000000003'
+  AND R.FECHA_HORA = TIMESTAMP '2026-10-28 11:20:00';
+
+INSERT INTO NOTIFICACION (
+    ASUNTO, MENSAJE, FECHA_HORA,
+    LEIDA, ID_USUARIO, ID_RESERVA
+)
+SELECT
+    'Reserva cancelada',
+    'Tu reserva fue cancelada correctamente.',
+    R.FECHA_HORA + INTERVAL '5' MINUTE,
+    'N',
+    U.ID_USUARIO,
+    R.ID_RESERVA
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+JOIN USUARIO_SISTEMA U ON U.ID_USUARIO = P.ID_USUARIO
+WHERE P.DOCUMENTO = '1000000004'
+  AND R.FECHA_HORA = TIMESTAMP '2026-11-02 16:40:00';
+
+INSERT INTO NOTIFICACION (
+    ASUNTO, MENSAJE, FECHA_HORA,
+    LEIDA, ID_USUARIO, ID_RESERVA
+)
+SELECT
+    'Reserva confirmada',
+    'Tu experiencia en la Granja Interactiva esta confirmada.',
+    R.FECHA_HORA + INTERVAL '2' MINUTE,
+    'S',
+    U.ID_USUARIO,
+    R.ID_RESERVA
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+JOIN USUARIO_SISTEMA U ON U.ID_USUARIO = P.ID_USUARIO
+WHERE P.DOCUMENTO = '1000000005'
+  AND R.FECHA_HORA = TIMESTAMP '2026-11-03 08:45:00';
+
+INSERT INTO NOTIFICACION (
+    ASUNTO, MENSAJE, FECHA_HORA,
+    LEIDA, ID_USUARIO, ID_RESERVA
+)
+SELECT
+    'Reserva expirada',
+    'Tu reserva expiro porque no fue confirmada a tiempo.',
+    R.FECHA_HORA + INTERVAL '16' MINUTE,
+    'N',
+    U.ID_USUARIO,
+    R.ID_RESERVA
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+JOIN USUARIO_SISTEMA U ON U.ID_USUARIO = P.ID_USUARIO
+WHERE P.DOCUMENTO = '1000000006'
+  AND R.FECHA_HORA = TIMESTAMP '2026-11-03 15:10:00';
+
+INSERT INTO NOTIFICACION (
+    ASUNTO, MENSAJE, FECHA_HORA,
+    LEIDA, ID_USUARIO, ID_RESERVA
+)
+SELECT
+    'Compra de combo',
+    'Tu compra del combo Experiencia Cafetera fue registrada.',
+    R.FECHA_HORA + INTERVAL '4' MINUTE,
+    'N',
+    U.ID_USUARIO,
+    R.ID_RESERVA
+FROM RESERVA R
+JOIN PERFIL_CLIENTE P ON P.ID_PERFIL = R.ID_PERFIL
+JOIN USUARIO_SISTEMA U ON U.ID_USUARIO = P.ID_USUARIO
+WHERE P.DOCUMENTO = '1000000001'
+  AND R.FECHA_HORA = TIMESTAMP '2026-11-05 09:10:00';
+
+-- Notificacion general sin reserva asociada.
+INSERT INTO NOTIFICACION (
+    ASUNTO, MENSAJE, FECHA_HORA,
+    LEIDA, ID_USUARIO, ID_RESERVA
+)
+SELECT
+    'Bienvenido a Boleteria',
+    'Ya puedes consultar las actividades turisticas disponibles.',
+    TIMESTAMP '2026-11-01 08:00:00',
+    'S',
+    U.ID_USUARIO,
+    NULL
+FROM USUARIO_SISTEMA U
+WHERE U.CORREO = 'laura.gomez@example.com';
+
+COMMIT;
+
+
+-- Datos de identidad de la etapa 2. La clave se provisiona por separado.
+INSERT INTO ROL (NOMBRE) VALUES ('ENCARGADO_PRESTADOR');
+
+INSERT INTO USUARIO_SISTEMA (CORREO, CLAVE_HASH, ESTADO, ID_ROL, ID_PRESTADOR)
+SELECT 'encargado@boleteria.example', 'PENDIENTE_CONFIGURACION', 'ACTIVO',
+       R.ID_ROL, (SELECT MIN(ID_PRESTADOR) FROM PRESTADOR)
+FROM ROL R WHERE R.NOMBRE = 'ENCARGADO_PRESTADOR';
+
+INSERT INTO PERFIL_CLIENTE (DOCUMENTO, NOMBRE)
+VALUES ('MOSTRADOR-DEMO', 'Cliente de mostrador');
+
+COMMIT;

@@ -1,0 +1,9 @@
+# Boletas · Subetapa 2
+
+El módulo expone GET /api/boletas, GET /api/boletas/{id}, GET /api/boletas/codigo?valor= y POST /api/boletas/{id}/usar. Las consultas por ID y código comparten el alcance del listado. Un código ajeno se trata igual que uno inexistente. El administrador y el operador tienen alcance global. El cliente consulta únicamente boletas de su perfil. El encargado consulta y registra uso por el prestador de la atracción de cada boleta, incluso en una reserva mixta. El DTO identifica la reserva pero solo contiene datos de la boleta consultada y de su propia función.
+
+El uso requiere estado VENDIDA y una función PROGRAMADA, el mismo día y desde la apertura inclusive hasta el cierre exclusivo. Se utiliza el reloj de Spring convertido a America/Bogota. El navegador no decide si la operación es válida. Una operación exitosa cambia únicamente BOLETA.ESTADO a USADA. El precio, código, relaciones y cabecera de reserva conservan sus valores.
+
+Infraestructura abre una transacción por uso. El adaptador bloquea FUNCION, ATRACCION y BOLETA en ese orden, vuelve a consultar con alcance y ejecuta un UPDATE condicionado a VENDIDA. No necesita bloquear la reserva ni la zona porque no modifica aforo, programación ni el vínculo de emisión. Ventas también toma función antes de atracción. El bloqueo de la atracción evita que el alcance del encargado cambie mientras se registra el uso. Las esperas agotadas y el estado terminal devuelven HTTP 409. No se requiere migración.
+
+La prueba acumulativa se ejecuta en BOLETERIA_RSV_QA2 con BOLETERIA_BOLETAS_QA, BOLETERIA_VENTAS_QA y BOLETERIA_RESERVAS_QA activadas y el planificador deshabilitado. La prueba de Boletas fija el reloj para poder ejecutarse a cualquier hora. Las operaciones de la pantalla Boletas usan Oracle mediante la API. Los datos locales que todavía consumen Reportes y Notificaciones pertenecen a esos flujos.

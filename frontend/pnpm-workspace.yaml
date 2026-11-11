@@ -1,0 +1,8 @@
+pmOnFail: ignore
+
+allowBuilds:
+  core-js: true
+
+minimumReleaseAgeExclude:
+  - '@next/*'
+  - next
